@@ -5,7 +5,7 @@ const int led_V = 6;
 const int led_B = 7;
 const int therm = 9;
 
-// DÃ©finition de l'adresse du capteur #1
+// Définition de l'adresse du capteur #1
 #define DS1631_ADDR 0x94 >> 1
 #define DS1631_ADDR2 0x90 >> 1
 
@@ -19,43 +19,43 @@ void setup()
   pinMode(led_B, OUTPUT);
   pinMode(therm, INPUT);
   
-    // Ã‰tablissement de la connexion sÃ©rie PC <--> Arduino
+    // Établissement de la connexion série PC <--> Arduino
     Serial.begin(9600);
     Serial.println();
     Serial.println("Configuration du capteur ...");
     Serial.println();
     Serial.println("_______________________________");
-    Serial.println(" DS1631 Capteur de tempÃ©rature ");
+    Serial.println(" DS1631 Capteur de température ");
     Serial.println("_______________________________");
     Serial.println();
 
-    // On rejoint le bus I2C comme maÃ®tre
+    // On rejoint le bus I2C comme maître
     Wire.begin();
 
-    // L'accÃ¨s au registre de configuration suppose qu'on arrÃªte toutes les mesures en cours de conversion
+    // L'accès au registre de configuration suppose qu'on arrête toutes les mesures en cours de conversion
     /////////////////////////////////////////////////////////////////////////////////////////////
     Wire.beginTransmission(DS1631_ADDR);
-    Wire.write(0x22); // La conversion courante est stoppÃ©e.
+    Wire.write(0x22); // La conversion courante est stoppée.
     int error1 = Wire.endTransmission();
 
     if (error1 != 0)
     {
-        Serial.print("Erreur dÃ©tectÃ©e, valeur: ");
+        Serial.print("Erreur détectée, valeur: ");
         Serial.println(error1);
-        Serial.println("Le composant n'est pas dÃ©tectÃ©, vÃ©rifier votre cÃ¢blage 1 (adresse...");
+        Serial.println("Le composant n'est pas détecté, vérifier votre câblage 1 (adresse...");
         delay(5000);
     }
 
     //_____________________________________________________________________________________________
     Wire.beginTransmission(DS1631_ADDR2);
-    Wire.write(0x22); // La conversion courante est stoppÃ©e.
+    Wire.write(0x22); // La conversion courante est stoppée.
     int error2 = Wire.endTransmission();    
 
     if (error2 != 0)
     {
-        Serial.print("Erreur dÃ©tectÃ©e, valeur: ");
+        Serial.print("Erreur détectée, valeur: ");
         Serial.println(error2);
-        Serial.println("Le composant n'est pas dÃ©tectÃ©, vÃ©rifier votre cÃ¢blage 2 (adresse...");
+        Serial.println("Le composant n'est pas détecté, vérifier votre câblage 2 (adresse...");
         delay(5000);
     }
 
@@ -73,22 +73,22 @@ void setup()
     Serial.print(ancienne_config, HEX);
     Serial.println();
 
-    // Ã‰criture de la data de configuration dans le registre config
+    // Écriture de la data de configuration dans le registre config
     Wire.beginTransmission(DS1631_ADDR);
     Wire.write(0xAC);
     Wire.write(0x0C); 
     Wire.endTransmission();
 
-    // Lecture de la configuration actuelle aprÃ¨s modification
+    // Lecture de la configuration actuelle après modification
     Wire.requestFrom(DS1631_ADDR, 1);
     Wire.available();
     int config_actuelle = Wire.read();
 
-    Serial.print("Configuration actuelle aprÃ¨s modification 1 : 0x");
+    Serial.print("Configuration actuelle après modification 1 : 0x");
     Serial.print(config_actuelle, HEX);
     Serial.println();
 
-    // DÃ©but de la conversion de TÂ°
+    // Début de la conversion de T°
     Wire.beginTransmission(DS1631_ADDR);
     Wire.write(0x51); // Code commande de start
     Wire.endTransmission();
@@ -107,42 +107,43 @@ void setup()
     Serial.print(ancienne_config2, HEX);
     Serial.println();
 
-    // Ã‰criture de la data de configuration dans le registre config
+    // Écriture de la data de configuration dans le registre config
     Wire.beginTransmission(DS1631_ADDR2);
     Wire.write(0xAC);
     Wire.write(0x0C); 
     Wire.endTransmission();
 
-    // Lecture de la configuration actuelle aprÃ¨s modification
+    // Lecture de la configuration actuelle après modification
     Wire.requestFrom(DS1631_ADDR2, 1);
     Wire.available();
     int config_actuelle2 = Wire.read();
 
-    Serial.print("Configuration actuelle aprÃ¨s modification 2 : 0x");
+    Serial.print("Configuration actuelle après modification 2 : 0x");
     Serial.print(config_actuelle2, HEX);
     Serial.println();
 
-    // DÃ©but de la conversion de TÂ°
+    // Début de la conversion de T°
     Wire.beginTransmission(DS1631_ADDR2);
     Wire.write(0x51); // Code commande de start
     Wire.endTransmission();
 
-   // DÃ©but de la conversion de TÂ°
+   // Début de la conversion de T°
     Wire.beginTransmission(DS1631_ADDR2);
-    Wire.write(0x51); // Code commande pour dÃ©marrer la conversion
+    Wire.write(0x51); // Code commande pour démarrer la conversion
     Wire.endTransmission();
 
+ // Configuration de Tl (température basse)
     Wire.beginTransmission(DS1631_ADDR);
-    Wire.write(0xA2); // Code commande pour Ã©crire Tl
-    Wire.write(0x1A);
-    Wire.write(0x80);
+    Wire.write(0xA2);     // Code commande pour écrire Tl
+    Wire.write(0x18);     // Partie entière
+    Wire.write(0x80);     // Partie décimale
     Wire.endTransmission();
 
- // Configuration de Th (tempÃ©rature haute)
+ // Configuration de Th (température haute)
     Wire.beginTransmission(DS1631_ADDR);
-    Wire.write(0xA1);
-    Wire.write(0x1B);
-    Wire.write(0x00);
+    Wire.write(0xA1);     // Code commande pour écrire Th
+    Wire.write(0x19);     // Partie entière
+    Wire.write(0x80);     // Partie décimale
     Wire.endTransmission();
 
 }
@@ -152,9 +153,9 @@ void loop()
 {
     Serial.println("____________________________________________________");
 
-    // Lecture de la tempÃ©rature
+    // Lecture de la température
     Wire.beginTransmission(DS1631_ADDR);
-    Wire.write(0xAA); // Code commande Lecture TÂ°
+    Wire.write(0xAA); // Code commande Lecture T°
     Wire.endTransmission();
 
     // Lecture de 2 octets
@@ -173,7 +174,7 @@ void loop()
     Serial.println(T_LSB, BIN);
 
     Wire.beginTransmission(DS1631_ADDR2);
-    Wire.write(0xAA); // Code commande Lecture TÂ°
+    Wire.write(0xAA); // Code commande Lecture T°
     Wire.endTransmission();
 
     // Lecture de 2 octets
@@ -193,7 +194,7 @@ void loop()
     Serial.println(T_LSB2, BIN);
     Serial.println("--------------------------------");
     
-    // Calcul de la partie entiÃ¨re
+    // Calcul de la partie entière
     int partie_entiere = T_MSB & 0b01111111;
     int partie_entiere2 = T_MSB2 & 0b01111111;
 
@@ -216,13 +217,13 @@ void loop()
         poids = poids / 2;
     }
 
-    Serial.print("Valeur dÃ©cimale correspondante : Capteur 1 = ");
-    // On affiche le signe moins si le signe est Ã  1
+    Serial.print("Valeur décimale correspondante : Capteur 1 = ");
+    // On affiche le signe moins si le signe est à 1
     if (T_MSB >= 0x80) Serial.print("-");
 
-    // Et la tempÃ©rature
+    // Et la température
     Serial.print((T_MSB & 0b01111111) + partie_decimale, 1);
-    Serial.print(" Â°C");
+    Serial.print(" °C");
     Serial.println();
 
     for (int j = 0; j < 4; j++)
@@ -235,13 +236,13 @@ void loop()
         poids2 = poids2 / 2;
     }
 
-    Serial.print("Valeur dÃ©cimale correspondante : Capteur 2 = ");
-    // On affiche le signe moins si le signe est Ã  1
+    Serial.print("Valeur décimale correspondante : Capteur 2 = ");
+    // On affiche le signe moins si le signe est à 1
     if (T_MSB2 >= 0x80) Serial.print("-");
 
-    // Et la tempÃ©rature
+    // Et la température
     Serial.print((T_MSB2 & 0b01111111) + partie_decimale2, 1);
-    Serial.print(" Â°C");
+    Serial.print(" °C");
     Serial.println();
 
     if (digitalRead(therm) == LOW)
