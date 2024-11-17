@@ -5,7 +5,7 @@ const int led_V = 6;
 const int led_B = 7;
 const int therm = 9;
 
-// Définition de l'adresse du capteur #1
+// Définition de l'adresse des capteurs
 #define DS1631_ADDR 0x94 >> 1
 #define DS1631_ADDR2 0x90 >> 1
 
