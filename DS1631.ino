@@ -88,6 +88,20 @@ void setup()
     Serial.print(config_actuelle, HEX);
     Serial.println();
 
+ // Configuration de Tl (température basse)
+    Wire.beginTransmission(DS1631_ADDR);
+    Wire.write(0xA2);     // Code commande pour écrire Tl
+    Wire.write(0x18);     // Partie entière
+    Wire.write(0x80);     // Partie décimale
+    Wire.endTransmission();
+
+ // Configuration de Th (température haute)
+    Wire.beginTransmission(DS1631_ADDR);
+    Wire.write(0xA1);     // Code commande pour écrire Th
+    Wire.write(0x19);     // Partie entière
+    Wire.write(0x80);     // Partie décimale
+    Wire.endTransmission();
+
     // Début de la conversion de T°
     Wire.beginTransmission(DS1631_ADDR);
     Wire.write(0x51); // Code commande de start
@@ -131,21 +145,6 @@ void setup()
     Wire.beginTransmission(DS1631_ADDR2);
     Wire.write(0x51); // Code commande pour démarrer la conversion
     Wire.endTransmission();
-
- // Configuration de Tl (température basse)
-    Wire.beginTransmission(DS1631_ADDR);
-    Wire.write(0xA2);     // Code commande pour écrire Tl
-    Wire.write(0x18);     // Partie entière
-    Wire.write(0x80);     // Partie décimale
-    Wire.endTransmission();
-
- // Configuration de Th (température haute)
-    Wire.beginTransmission(DS1631_ADDR);
-    Wire.write(0xA1);     // Code commande pour écrire Th
-    Wire.write(0x19);     // Partie entière
-    Wire.write(0x80);     // Partie décimale
-    Wire.endTransmission();
-
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////
