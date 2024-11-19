@@ -244,6 +244,7 @@ void loop()
     Serial.print(" °C");
     Serial.println();
 
+  // État de la led en fonction de l'état du thermostat
     if (digitalRead(therm) == LOW)
     {
       analogWrite(led_R , 150);
